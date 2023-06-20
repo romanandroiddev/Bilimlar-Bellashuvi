@@ -51,7 +51,8 @@ class ApiService {
     }
   }
 
-  Future<bool> update(String value, String paramName) async {
+  Future<SetPasswordData> update(
+      String? firstName, String? lastName, String? userName) async {
     String token = await SharedPreferencesHelper.getToken();
 
     var headers = {
@@ -60,9 +61,14 @@ class ApiService {
     };
     final url = Uri.parse("$baseURL/user/profile");
     final response = await http.patch(url,
-        body: jsonEncode({paramName: value}), headers: headers);
+        body: jsonEncode({
+          'first_name': firstName,
+          'last_name': lastName,
+          'username': userName
+        }),
+        headers: headers);
     if (response.statusCode == 200) {
-      return true;
+      return SetPasswordData.fromJson(jsonDecode(response.body));
     } else if (response.statusCode >= 400 && response.statusCode < 500) {
       return Future.error(jsonDecode(response.body)['message']);
     } else {

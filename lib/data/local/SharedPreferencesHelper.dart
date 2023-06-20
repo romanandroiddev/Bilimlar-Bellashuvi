@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPreferencesHelper{
   static const String _kIsSignedIn = "isSignedIn";
   static const String _kFirstName = "first_name";
+  static const String _kLastName = "last_name";
   static const String _kLanguage = "language";
   static const String _kUserName = "username";
   static const String _kAvatar = "avatar";
@@ -24,6 +25,11 @@ class SharedPreferencesHelper{
   }
 
   static Future<bool> setName(String value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString(_kFirstName, value);
+  }
+
+  static Future<bool> setLastName(String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString(_kFirstName, value);
   }
@@ -60,6 +66,12 @@ class SharedPreferencesHelper{
   static Future<String> getName() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_kFirstName)??'';
+
+  }
+
+  static Future<String> getLastName() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_kLastName)??'';
 
   }
   static Future<String> getUserName() async {

@@ -7,6 +7,7 @@ import 'package:bilimlar_bellashuvi/presentation/auth/signup/SignUpScreen.dart';
 import 'package:bilimlar_bellashuvi/presentation/intro/IntroScreen.dart';
 import 'package:bilimlar_bellashuvi/presentation/language/LanguageScreen.dart';
 import 'package:bilimlar_bellashuvi/presentation/main/MainScreen.dart';
+import 'package:bilimlar_bellashuvi/presentation/settings/EditDataScreen.dart';
 import 'package:bilimlar_bellashuvi/presentation/splash/SplashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -99,6 +100,12 @@ final router = GoRouter(
       path: '/main_page',
       builder: (context, state) {
         return const MainScreen();
+      },
+    ),
+    GoRoute(
+      path: '/edit',
+      builder: (context, state) {
+        return const EditScreen();
       },
     ),
   ],

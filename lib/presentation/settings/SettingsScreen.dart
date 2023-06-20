@@ -1,9 +1,9 @@
 import 'package:bilimlar_bellashuvi/data/local/SharedPreferencesHelper.dart';
 import 'package:bilimlar_bellashuvi/data/models/GetMeData.dart';
-import 'package:bilimlar_bellashuvi/presentation/utils/DialogManager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../components/styles.dart';
@@ -47,6 +47,17 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
         ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              context.push('/edit');
+            },
+            child:const Padding(
+              padding: EdgeInsets.only(right: 12),
+              child:  Icon(Icons.edit, color: Colors.black),
+            )
+          )
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -113,8 +124,6 @@ class SettingsScreen extends StatelessWidget {
                       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: OutlinedButton(
                           onPressed: () {
-                            DialogManager(context).openDialogToChangeUserName(
-                                _apiService, 'Username', 'username');
                           },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all<
@@ -158,8 +167,6 @@ class SettingsScreen extends StatelessWidget {
                         margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         child: OutlinedButton(
                           onPressed: () {
-                            DialogManager(context)
-                                .openDialogToChangeFullName(_apiService);
                           },
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all<
