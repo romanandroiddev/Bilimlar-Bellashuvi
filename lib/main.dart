@@ -4,6 +4,7 @@ import 'package:bilimlar_bellashuvi/presentation/auth/login/LoginWithPhoneScreen
 import 'package:bilimlar_bellashuvi/presentation/auth/reset/ResetCodeScreeen.dart';
 import 'package:bilimlar_bellashuvi/presentation/auth/reset/SetPasswodScreen.dart';
 import 'package:bilimlar_bellashuvi/presentation/auth/signup/SignUpScreen.dart';
+import 'package:bilimlar_bellashuvi/presentation/game/SearchUserScreen.dart';
 import 'package:bilimlar_bellashuvi/presentation/intro/IntroScreen.dart';
 import 'package:bilimlar_bellashuvi/presentation/language/LanguageScreen.dart';
 import 'package:bilimlar_bellashuvi/presentation/main/MainScreen.dart';
@@ -37,7 +38,7 @@ final router = GoRouter(
     GoRoute(
       path: '/language',
       builder: (context, state) {
-        return LanguageScreen();
+        return const LanguageScreen();
       },
     ),
     GoRoute(
@@ -106,6 +107,12 @@ final router = GoRouter(
       path: '/edit',
       builder: (context, state) {
         return const EditScreen();
+      },
+    ),
+    GoRoute(
+      path: '/searchUser',
+      builder: (context, state) {
+        return const SearchUserScreen();
       },
     ),
   ],

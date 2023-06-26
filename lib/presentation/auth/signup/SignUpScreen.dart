@@ -119,9 +119,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (text == null || text.isEmpty) {
                           return 'Field should not be empty';
                         }
-                        if(!text.contains('@gmail.com') || !text.startsWith('998')){
-                          return 'Invalid value was entered';
-                        }
                         return null;
                       },
                       onChanged: (String text) {
@@ -226,7 +223,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(snackBar);
                               });
-                            } else {
+                            } else if(_value.startsWith('998') && _value.length==12){
                               await _apiService
                                   .sendCodeToPhone(firstName, _value, password)
                                   .then((value) {

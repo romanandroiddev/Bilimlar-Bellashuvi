@@ -48,7 +48,6 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
         leading: GestureDetector(
           onTap: () {
             context.pop();
-            // Navigator.maybePop(context);
           },
           child: Container(
             margin: const EdgeInsets.fromLTRB(12, 12, 0, 0),

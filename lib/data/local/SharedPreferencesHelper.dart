@@ -29,9 +29,9 @@ class SharedPreferencesHelper{
     return prefs.setString(_kFirstName, value);
   }
 
-  static Future<bool> setLastName(String value) async {
+  static Future<bool> setLastName(String? value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString(_kFirstName, value);
+    return prefs.setString(_kLastName, value??'');
   }
   static Future<bool> setLanguageCode(String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -65,7 +65,7 @@ class SharedPreferencesHelper{
 
   static Future<String> getName() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_kFirstName)??'';
+    return prefs.getString(_kFirstName)?? '';
 
   }
 

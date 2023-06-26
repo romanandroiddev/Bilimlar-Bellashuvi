@@ -1,6 +1,5 @@
 import 'package:bilimlar_bellashuvi/data/local/SharedPreferencesHelper.dart';
 import 'package:bilimlar_bellashuvi/data/models/GetMeData.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -49,14 +48,13 @@ class SettingsScreen extends StatelessWidget {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
-              context.push('/edit');
-            },
-            child:const Padding(
-              padding: EdgeInsets.only(right: 12),
-              child:  Icon(Icons.edit, color: Colors.black),
-            )
-          )
+              onTap: () {
+                context.push('/edit');
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(right: 12),
+                child: Icon(Icons.edit, color: Colors.black),
+              ))
         ],
       ),
       body: SafeArea(
@@ -65,9 +63,11 @@ class SettingsScreen extends StatelessWidget {
               future: _apiService.getMe(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.data != null) {
+                    snapshot.data != null && snapshot.data!.payload!=null) {
                   SharedPreferencesHelper.setName(
                       snapshot.data!.payload!.firstName);
+                  SharedPreferencesHelper.setLastName(
+                      snapshot.data!.payload!.lastName ?? '');
                   SharedPreferencesHelper.setEmailAddress(
                       snapshot.data!.payload!.email);
                   SharedPreferencesHelper.setPhoneNumber(
@@ -90,26 +90,15 @@ class SettingsScreen extends StatelessWidget {
                             child: ClipOval(
                                 child: snapshot.connectionState ==
                                         ConnectionState.done
-                                    ? CachedNetworkImage(
-                                        fit: BoxFit.fitHeight,
-                                        imageUrl: (snapshot.data != null
-                                                ? snapshot.data!.payload!.avatar
-                                                : '') ??
+                                    ? Image.network(
+                                        (snapshot.data!.payload!.avatar ??
+                                                '') ??
                                             '',
-                                        progressIndicatorBuilder:
-                                            (context, url, progress) =>
-                                                Shimmer.fromColors(
-                                          baseColor: Colors.black12,
-                                          highlightColor: Colors.white,
-                                          child: const SizedBox(
-                                              width: double.infinity,
-                                              height: double.infinity),
-                                        ),
-                                        errorWidget: (context, url, error) {
-                                          return SvgPicture.asset(
-                                              'assets/Cool Kids Bust.svg');
-                                        },
-                                      )
+                                        fit: BoxFit.cover, errorBuilder:
+                                            (context, error, stackTrace) {
+                                        return SvgPicture.asset(
+                                            'assets/Cool Kids Bust.svg');
+                                      })
                                     : Shimmer.fromColors(
                                         baseColor: Colors.black12,
                                         highlightColor: Colors.white,
@@ -119,55 +108,11 @@ class SettingsScreen extends StatelessWidget {
                                           color: Colors.black,
                                         ))))),
                     Container(
-                      height: 80,
-                      width: double.infinity,
-                      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: OutlinedButton(
-                          onPressed: () {
-                          },
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            )),
-                          ),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                  height: 32,
-                                  width: 32,
-                                  'assets/Profile Circle.svg'),
-                              const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('Username', style: TextStyles.heading1),
-                                  Text(
-                                    (snapshot.data != null
-                                            ? snapshot.data!.payload!.username
-                                            : 'e.g username') ??
-                                        'e.g username',
-                                    style: TextStyles.paragraphMedium,
-                                  )
-                                ],
-                              )
-                            ],
-                          )),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.fromLTRB(16, 16, 0, 0),
-                      child: Text('Account information',
-                          style: TextStyles.heading2),
-                    ),
-                    Container(
                         height: 80,
                         width: double.infinity,
                         margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         child: OutlinedButton(
-                          onPressed: () {
-                          },
+                          onPressed: () {},
                           style: ButtonStyle(
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
@@ -195,7 +140,7 @@ class SettingsScreen extends StatelessWidget {
                                     Text('Full name',
                                         style: TextStyles.heading1),
                                     Text(
-                                      (snapshot.data != null
+                                      (snapshot.data != null && snapshot.data!.payload!=null
                                               ? '${snapshot.data!.payload!.firstName} ${snapshot.data!.payload!.lastName ?? ''}'
                                               : '') ??
                                           '',
@@ -207,6 +152,12 @@ class SettingsScreen extends StatelessWidget {
                             ),
                           ),
                         )),
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(16, 16, 0, 0),
+                      child: Text('Account information',
+                          style: TextStyles.heading2),
+                    ),
                     Container(
                         height: 80,
                         width: double.infinity,
@@ -237,7 +188,7 @@ class SettingsScreen extends StatelessWidget {
                                   children: [
                                     Text('Umail', style: TextStyles.heading1),
                                     Text(
-                                      (snapshot.data != null
+                                      (snapshot.data != null && snapshot.data!.payload!=null
                                               ? snapshot.data!.payload!.email
                                               : 'e.g test@umail.com') ??
                                           'e.g test@umail.com',
@@ -249,6 +200,42 @@ class SettingsScreen extends StatelessWidget {
                             ),
                           ),
                         )),
+                    Container(
+                      height: 80,
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: OutlinedButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            )),
+                          ),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                  height: 32,
+                                  width: 32,
+                                  'assets/Profile Circle.svg'),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Username', style: TextStyles.heading1),
+                                  Text(
+                                    (snapshot.data != null && snapshot.data!.payload!=null
+                                            ? snapshot.data!.payload!.username
+                                            : 'e.g username') ??
+                                        'e.g username',
+                                    style: TextStyles.paragraphMedium,
+                                  )
+                                ],
+                              )
+                            ],
+                          )),
+                    ),
                     Container(
                         height: 80,
                         width: double.infinity,
@@ -279,7 +266,7 @@ class SettingsScreen extends StatelessWidget {
                                   children: [
                                     Text('Phone', style: TextStyles.heading1),
                                     Text(
-                                      (snapshot.data != null
+                                      (snapshot.data != null && snapshot.data!.payload!=null
                                               ? snapshot
                                                   .data!.payload!.phoneNumber
                                               : 'e.g 998000000000') ??

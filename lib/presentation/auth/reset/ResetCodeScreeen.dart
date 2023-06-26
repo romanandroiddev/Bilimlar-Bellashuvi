@@ -83,18 +83,10 @@ class _ResetCodeScreenState extends State<ResetCodeScreen> {
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         child: TextFormField(
                           validator: (text) {
-
-                              if (text == null || text.isEmpty) {
-                                return 'Field  should not be empty';
-                              }
-                              if (!text.contains('@gmail.com') || !text.startsWith('998')) {
-                                return 'Invalid value was entered';
-                              }
-
-                              if (text.length != 12) {
-                                return 'Invalid phone number was entered';
-                              }
-                              return null;
+                            if (text == null || text.isEmpty) {
+                              return 'Field  should not be empty';
+                            }
+                            return null;
                           },
                           onChanged: (text) {
                             _value = text;
@@ -127,18 +119,22 @@ class _ResetCodeScreenState extends State<ResetCodeScreen> {
                               TextEditingController().clear();
                               ProgressBarUtils(context).startLoading();
                               await _apiService
-                                  .resetCode(_value.contains('@gmail.com')
-                                      ? 'email'
-                                      : 'phone', _value)
+                                  .resetCode(
+                                      _value.contains('@gmail.com')
+                                          ? 'email'
+                                          : 'phone_number',
+                                      _value)
                                   .then((value) {
                                 if (value.statusCode == 200 &&
                                     value.payload != null) {
-                                  context.push('/confirm',
-                                      extra: {"timer": value.payload!.timer});
-                                } else if (_value.length == 12 &&
-                                    _value.startsWith('998')) {
-                                  context.push('/confirm_code',
-                                      extra: {"phone": _value});
+                                  if (_value.contains('@gmail.com')) {
+                                    context.push('/confirm',
+                                        extra: {"timer": value.payload!.timer});
+                                  } else if (_value.length == 12 &&
+                                      _value.startsWith('998')) {
+                                    context.push('/confirm_code',
+                                        extra: {"phone": _value});
+                                  }
                                 }
                                 ProgressBarUtils(context).stopLoading();
                               }).catchError((error) {

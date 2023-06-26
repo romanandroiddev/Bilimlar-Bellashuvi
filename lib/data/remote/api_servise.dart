@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:bilimlar_bellashuvi/data/local/SharedPreferencesHelper.dart';
 import 'package:bilimlar_bellashuvi/data/models/GetMeData.dart';
+import 'package:bilimlar_bellashuvi/data/models/GetUsersResponseData.dart';
 import 'package:bilimlar_bellashuvi/data/models/LanguageData.dart';
 import 'package:bilimlar_bellashuvi/data/models/LoginResponseData.dart';
 import 'package:bilimlar_bellashuvi/data/models/SetPasswordData.dart';
@@ -9,8 +10,10 @@ import 'package:http/http.dart' as http;
 
 import 'package:bilimlar_bellashuvi/data/models/SendEmailData.dart';
 
+import '../models/GetRandomUserResponseData.dart';
+
 class ApiService {
-  static const baseURL = "http://192.168.0.194:8080";
+  static const baseURL = "http://192.168.88.178:8080";
 
   Future<SendEmailResponseData> sendCodeToEmail(
       String firstName, String email, String password) async {
@@ -67,6 +70,25 @@ class ApiService {
           'username': userName
         }),
         headers: headers);
+    if (response.statusCode == 200) {
+      return SetPasswordData.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      return Future.error(jsonDecode(response.body)['message']);
+    } else {
+      throw Exception('Failed to get data');
+    }
+  }
+
+  Future<SetPasswordData> updateLanguage(int languageCode) async {
+    String token = await SharedPreferencesHelper.getToken();
+
+    var headers = {
+      'Content-Type': 'application/json',
+      HttpHeaders.authorizationHeader: "Bearer $token"
+    };
+    final url = Uri.parse("$baseURL/user/profile");
+    final response = await http.patch(url,
+        body: jsonEncode({'language': languageCode}), headers: headers);
     if (response.statusCode == 200) {
       return SetPasswordData.fromJson(jsonDecode(response.body));
     } else if (response.statusCode >= 400 && response.statusCode < 500) {
@@ -207,6 +229,64 @@ class ApiService {
 
     if (response.statusCode == 200) {
       return LoginResponseData.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      return Future.error(jsonDecode(response.body)['message']);
+    } else {
+      throw Exception('Failed to get data');
+    }
+  }
+
+  Future<bool> uploadPhoto(File imageFile) async {
+    String token = await SharedPreferencesHelper.getToken();
+    var headers = {HttpHeaders.authorizationHeader: "Bearer $token"};
+
+    final url = Uri.parse("$baseURL/user/profile/upload");
+    final request = http.MultipartRequest('POST', url)
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath('avatar', imageFile.path));
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<GetUsersResponseData> getUsers(
+      int limit, int page, int? isOnline, String? username) async {
+    String token = await SharedPreferencesHelper.getToken();
+    var headers = {
+      'Content-Type': 'application/json',
+      HttpHeaders.authorizationHeader: "Bearer $token"
+    };
+    final url = Uri.parse(
+        "$baseURL/user/search?take=$limit&page=$page&${isOnline == 0 ? '' : 'is_online=1'}&username=$username");
+    final response = await http.get(
+      url,
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      return GetUsersResponseData.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      return Future.error(jsonDecode(response.body)['message']);
+    } else {
+      throw Exception('Failed to get data');
+    }
+  }
+
+  Future<GetRandomUserResponseData> getRandomUser() async {
+    String token = await SharedPreferencesHelper.getToken();
+    var headers = {
+      'Content-Type': 'application/json',
+      HttpHeaders.authorizationHeader: "Bearer $token"
+    };
+    final url = Uri.parse("$baseURL/user/random");
+    final response = await http.get(
+      url,
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      return GetRandomUserResponseData.fromJson(jsonDecode(response.body));
     } else if (response.statusCode >= 400 && response.statusCode < 500) {
       return Future.error(jsonDecode(response.body)['message']);
     } else {

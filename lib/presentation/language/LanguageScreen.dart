@@ -17,7 +17,7 @@ class LanguageScreen extends StatefulWidget {
 
 class _LanguageScreenState extends State<LanguageScreen> {
   final ApiService _apiService = ApiService();
-  String selectedLanguage = 'ru';
+  String selectedLanguage='';
 
   setSelectedUser(String code) {
     setState(() {
@@ -73,12 +73,13 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                 groupValue: selectedLanguage,
                                 title:
                                     Text(snapshot.data!.payload![index].name),
-                                onChanged: (currentUser) {
-                                  setSelectedUser(currentUser ?? '');
+                                onChanged: (language) {
+                                  setSelectedUser(language!);
                                 },
-                                selected: selectedLanguage.toLowerCase() ==
-                                    snapshot.data!.payload![index].code
-                                        .toLowerCase(),
+                                selected: selectedLanguage != ''
+                                    ? selectedLanguage ==
+                                        snapshot.data!.payload![index].code
+                                    : false,
                                 activeColor: Colors.green,
                               );
                             });
@@ -98,7 +99,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         width: double.infinity,
                         child: FilledButton(
                           onPressed: () {
-                            SharedPreferencesHelper.setLanguageCode(selectedLanguage==''?'uz':selectedLanguage.toLowerCase());
+                            // _apiService.updateLanguage()
+                            SharedPreferencesHelper.setLanguageCode(
+                                selectedLanguage);
                             context.replace('/intro');
                           },
                           style: ButtonStyle(

@@ -43,6 +43,9 @@ class TextStyles {
   static TextStyle paragraphMedium = const TextStyle(
       fontFamily: 'Rubik', fontWeight: FontWeight.w400, fontSize: 14, color: Color(0xff78746D));
 
+  static TextStyle paragraphMediumWhite = const TextStyle(
+      fontFamily: 'Rubik', fontWeight: FontWeight.w500, fontSize: 14, color: Color(0xffffffff));
+
   static TextStyle paragraphSmall = const TextStyle(
       fontFamily: 'Rubik', fontWeight: FontWeight.w500, fontSize: 12, color: Color(0xff78746D));
 

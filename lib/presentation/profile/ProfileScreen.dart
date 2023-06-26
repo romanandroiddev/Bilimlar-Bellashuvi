@@ -94,7 +94,7 @@ class ProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16.0),
                     )),
                   ),
-                  child: Text('Payment', style: TextStyles.heading1),
+                  child: Text('Notifications', style: TextStyles.heading1),
                 )),
             const SizedBox(height: 16),
             Align(
